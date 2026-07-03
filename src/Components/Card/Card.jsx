@@ -1,5 +1,5 @@
 import "./Card.css";
-import image from "../../Assets/Biryani.jpg";
+import image from "../../Assets/biryani.jpg";
 import { useAuth } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
 import {
