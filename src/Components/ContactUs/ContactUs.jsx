@@ -6,6 +6,12 @@ import { toast } from "react-toastify";
 export default function ContactUs() {
   const [minDate, setMinDate] = useState("");
   const [maxDate, setMaxDate] = useState("");
+  
+  // Create state variables to track form input values
+  const [guests, setGuests] = useState("1");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("10:00");
+  const [name, setName] = useState("");
 
   useEffect(() => {
     const today = new Date();
@@ -24,6 +30,23 @@ export default function ContactUs() {
     setMaxDate(maxStr);
   }, []);
 
+  const handleReservation = (e) => {
+    e.preventDefault();
+
+    // Prevent submission if name or date fields are left blank
+    if (!name.trim() || !date) {
+      toast.error("Please fill in your name and select a date!");
+      return;
+    }
+
+    // Display an interactive success message confirming the details
+    toast.success(`Table reserved successfully for ${name}! 🎉`);
+    
+    // Optional: Reset name and date inputs after submission
+    setName("");
+    setDate("");
+  };
+
   return (
     <div className="contact-page" id="con">
       <img className="contact-logo" src={image} alt="" />
@@ -34,14 +57,9 @@ export default function ContactUs() {
         Whether it’s a party, birthday celebration, private function or awards
         ceremony, we can accommodate your upcoming event.
       </p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.warning("Sorry we are not booking tables now!!");
-        }}
-      >
+      <form onSubmit={handleReservation}>
         <div>
-          <select>
+          <select value={guests} onChange={(e) => setGuests(e.target.value)}>
             <option value="1">1 Person</option>
             <option value="2">2 Person</option>
             <option value="3">3 Person</option>
@@ -53,8 +71,14 @@ export default function ContactUs() {
             <option value="9">9 Person</option>
             <option value="10">10 Person</option>
           </select>
-          <input type="date" min={minDate} max={maxDate} />
-          <select>
+          <input 
+            type="date" 
+            min={minDate} 
+            max={maxDate} 
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <select value={time} onChange={(e) => setTime(e.target.value)}>
             <option value="10:00">10:00</option>
             <option value="10:30">10:30</option>
             <option value="11:00">11:00</option>
@@ -86,8 +110,13 @@ export default function ContactUs() {
             <option value="00:00">00:00</option>
           </select>
         </div>
-        <input type="text" placeholder="Your Name" />
-        <button>MAKE A RESERVATION</button>
+        <input 
+          type="text" 
+          placeholder="Your Name" 
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button type="submit">MAKE A RESERVATION</button>
       </form>
     </div>
   );

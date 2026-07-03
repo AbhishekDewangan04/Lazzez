@@ -13,11 +13,12 @@ export default function Ai() {
   const [numberOfPeople, setNumberOfPeople] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMENI_API_KEY }); // updated SDK
+  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY }); // updated SDK
 
-  useEffect(() => {
+useEffect(() => {
     const getFood = async () => {
       const data = await getAllFood();
+      console.log("🔥 Raw Food Data from Firestore:", data); // 👈 ADD THIS LINE
       setFood(data);
     };
     getFood();
@@ -54,14 +55,16 @@ ${JSON.stringify(food, null, 2)}
 
       // ✅ Updated API call
       const result = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         contents: prompt,
+        config: {
+    responseMimeType: "application/json", // Forces the model to reply with only valid JSON strings
+  }
       });
 
       console.log("Full AI response:", result);
 
-      let responseText =
-        result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      let responseText = result.text || "";
 
       // ✅ Strip triple backticks and optional 'json' tag
       responseText = responseText.trim();
@@ -119,8 +122,8 @@ ${JSON.stringify(food, null, 2)}
           {recommendedFood.map((item, i) => (
             <Card
               key={i}
-              name={item.name || item.foodName || "Unnamed Dish"}
-              image_link={item.imageUrl || ""}
+              name={item.name || "Unnamed Dish"}
+              image_link={item.imageUrl || item.image_link || ""} // 👈 UPDATE THIS LINE
               des={item.description || ""}
               price={item.price || 0}
               foodId={item.id || "ai-generated-food"}

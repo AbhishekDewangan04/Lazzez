@@ -30,7 +30,7 @@
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/VedantDewangan/Lazzez.git
+git clone https://github.com/AbhishekDewangan04/Lazzez.git
 cd Lazzez
 npm install
 ```
@@ -65,4 +65,4 @@ Licensed under the [MIT License](LICENSE).
 Feel free to use, modify, and share with attribution.
 
 ## 👨‍💻 Author
-Built with ❤️ by Vedant Dewangan
+Built with ❤️ by Abhishek Dewangan

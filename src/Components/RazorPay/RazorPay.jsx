@@ -11,16 +11,23 @@ export default function RazorPay({ grandTotal, cart, cartId }) {
   const [pincode, setPincode] = useState("");
   const [landmark, setLandmark] = useState("");
   const navigate = useNavigate();
+
   const buyNow = async () => {
     if (!currentUser) return;
+
+    // Define allowed delivery zones
+    const allowedPincodes = ["492001", "492010"];
+
     if (address.length <= 5 || pincode.length !== 6) {
       toast.error("Please enter a valid address and pincode");
       return;
     }
-    if (pincode !== "492001") {
+
+    if (!allowedPincodes.includes(pincode)) {
       toast.error("Sorry, we currently deliver only within Raipur city");
       return;
     }
+
     const userInfo = {
       userId: currentUser.uid,
       userName: currentUser.displayName,
@@ -29,12 +36,14 @@ export default function RazorPay({ grandTotal, cart, cartId }) {
       userPincode: pincode,
       userLandmark: landmark,
     };
+
+    // Razorpay Configuration
     var options = {
-      key: import.meta.env.VITE_RAZORPAY_API_KEY,
-      amount: parseInt(grandTotal * 100),
+      key: import.meta.env.VITE_RAZORPAY_API_KEY, // Your Test Key from .env
+      amount: parseInt(grandTotal * 100), // Convert to paise
       currency: "INR",
       name: "E-Bharat",
-      description: "for testing purpose",
+      description: "Order Payment",
       order_receipt: "order_rcptid_" + currentUser.displayName,
       handler: async function (response) {
         const paymentId = response.razorpay_payment_id;
@@ -56,8 +65,9 @@ export default function RazorPay({ grandTotal, cart, cartId }) {
           status: "Preparing Food",
           paymentId,
         };
+
         await createOrder({ data: orderInfo, cartId: cartId });
-        toast.success("Payment Successful");
+        toast.success("Payment Successful!");
         navigate("/orders");
       },
       prefill: {
@@ -68,6 +78,7 @@ export default function RazorPay({ grandTotal, cart, cartId }) {
         color: "#3399cc",
       },
     };
+
     var pay = new window.Razorpay(options);
     pay.open();
   };

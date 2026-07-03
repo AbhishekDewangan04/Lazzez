@@ -7,7 +7,7 @@ export default function AbooutUs() {
       <h2 className="about-us-heading">About Us</h2>
       <h3 className="about-us-sub-heading">Welcome to Lazzez</h3>
       <p className="about-us-p">
-        Founded with passion by Vedant Dewangan, Lazzez is more than just a
+        Founded with passion by Abhishek Dewangan, Lazzez is more than just a
         restaurant — it’s a celebration of India’s rich culinary heritage. From
         the warmth of traditional spices to the comfort of homestyle cooking, we
         bring you dishes that feel both nostalgic and exciting.

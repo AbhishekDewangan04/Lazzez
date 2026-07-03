@@ -3,7 +3,9 @@ import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./Order.css";
 import { useEffect, useState } from "react";
-import { getMyOrder } from "../../Firebase/firebaseClientFunctions";
+import { getMyOrder, cancelOrder } from "../../Firebase/firebaseClientFunctions";
+import { toast } from "react-toastify";
+import Swal from 'sweetalert2';
 
 export default function Order() {
   const { currentUser } = useAuth();
@@ -11,24 +13,36 @@ export default function Order() {
   const [order, setOrder] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Function to fetch orders
+  const fetchOrders = async () => {
+    if (!currentUser) return;
+    setLoading(true);
+    const data = await getMyOrder(currentUser.uid);
+
+    const sorted = data.sort((a, b) => {
+      const dateA = new Date(`${a.date} ${a.time}`);
+      const dateB = new Date(`${b.date} ${b.time}`);
+      return dateB - dateA;
+    });
+
+    setOrder(sorted);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const getOrder = async () => {
-      if (!currentUser) return;
-      setLoading(true);
-      const data = await getMyOrder(currentUser.uid);
-
-      // Sort latest orders first (assuming date + time are strings)
-      const sorted = data.sort((a, b) => {
-        const dateA = new Date(`${a.date} ${a.time}`);
-        const dateB = new Date(`${b.date} ${b.time}`);
-        return dateB - dateA;
-      });
-
-      setOrder(sorted);
-      setLoading(false);
-    };
-    getOrder();
+    fetchOrders();
   }, [currentUser]);
+
+  // Handle cancellation
+  const handleCancel = async (orderId) => {
+    const result = await cancelOrder(orderId);
+    if (result.success) {
+      toast.success("Order cancelled successfully");
+      fetchOrders(); // Refresh the list
+    } else {
+      toast.error("Failed to cancel order");
+    }
+  };
 
   return (
     <div className="page">
@@ -81,6 +95,14 @@ export default function Order() {
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Cancel Button Added Here */}
+                  <button 
+                    className="cancel-btn"
+                    onClick={() => handleCancel(orderItem.id)}
+                  >
+                    Cancel Order
+                  </button>
                 </div>
               ))}
             </div>

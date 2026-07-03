@@ -160,7 +160,7 @@ export const getMenu = async () => {
     }));
     return Items;
   } catch (error) {
-    console.error("Error fetching bestseller menu:", error);
+    console.error("Error fetching menu:", error);
     throw error;
   }
 };
@@ -203,5 +203,17 @@ export const getMyOrder = async (userId) => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+
+// New function to cancel an order
+export const cancelOrder = async (orderId) => {
+  try {
+    const orderRef = doc(db, "orders", orderId);
+    await deleteDoc(orderRef);
+    return { success: true };
+  } catch (error) {
+    console.error("Error canceling order: ", error);
+    return { success: false };
   }
 };

@@ -92,7 +92,7 @@ export default function Cart() {
       foodId: obj.foodId,
       FoodImageUrl: obj.imageUrl,
       FoodName: obj.name,
-      FoodPrice: obj.name,
+      FoodPrice: obj.FoodPrice, // FIXED: Corrected mapping from obj.name to obj.FoodPrice
     });
     setCart((prev) =>
       prev.map((item) =>
@@ -105,9 +105,8 @@ export default function Cart() {
   };
 
   return (
-    <div className="page">
+    <div className="page" style={{ paddingTop: "80px" }}> {/* FIXED: Added padding-top to resolve navbar overlapping header */}
       <Navbar />
-      <div style={{ height: "50px", width: "100vw" }}></div>
 
       {currentUser ? (
         loading ? (
